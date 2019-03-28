@@ -16,6 +16,11 @@ interface EnvironmentVariables {
   discordWebhook: string;
   jwtExpire: string | number;
   jwtSecret: string;
+  aws: {
+    accessKey: string;
+    secretKey: string;
+    region: string;
+  };
 }
 
 const variables: EnvironmentVariables = {
@@ -26,7 +31,12 @@ const variables: EnvironmentVariables = {
   env: throwIfUndefined("NODE_ENV"),
   port: throwIfUndefined("PORT"),
   jwtExpire: throwIfUndefined("JWT_EXPIRE"),
-  jwtSecret: throwIfUndefined("JWT_SECRET")
+  jwtSecret: throwIfUndefined("JWT_SECRET"),
+  aws: {
+    accessKey: throwIfUndefined("AWS_ACCESS_KEY_ID"),
+    secretKey: throwIfUndefined("AWS_SECRET_ACCESS_KEY"),
+    region: throwIfUndefined("AWS_REGION")
+  }
 };
 
 export default variables;

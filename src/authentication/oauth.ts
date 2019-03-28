@@ -7,6 +7,10 @@ import config from "../config";
 export interface TokenValues {
   token: {
     access_token: string;
+    token_type: string;
+    expires_in: number;
+    refresh_token: string;
+    expires_at: string;
   };
   character: {
     CharacterID: number;
@@ -42,8 +46,7 @@ export const redirectUri = `${config.redirectUrl}/v1/authentication/oauth`;
 /**
  * oauth scopes
  */
-export const scope =
-  "esi-contracts.read_corporation_contracts.v1 esi-universe.read_structures.v1";
+export const scope = "esi-corporations.read_corporation_membership.v1";
 
 /**
  * EVE SSO Login URL
@@ -72,7 +75,7 @@ export const getToken = async (code: string) => {
  * Check whether a token has expired, and if it has try to refresh it.
  * @param token
  */
-export const checkAccessToken = async (token: TokenValues) => {
+export const checkAccessToken = async (token: TokenValues["token"]) => {
   let accessToken = oauth2.accessToken.create(token);
 
   if (accessToken.expired()) {
@@ -82,6 +85,5 @@ export const checkAccessToken = async (token: TokenValues) => {
       console.log("Error refreshing access token: ", error.message);
     }
   }
-  console.log(accessToken);
   return accessToken.token.access_token;
 };

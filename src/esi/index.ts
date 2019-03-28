@@ -24,6 +24,7 @@ export default class ESIRequest {
   token: string;
   character: CharacterObject;
   affiliations: any;
+  affiliationNames: any;
   constructor(token: string) {
     this.token = token;
   }
@@ -42,7 +43,7 @@ export default class ESIRequest {
       ...options
     };
     const request = await got(
-      `https://esi.tech.ccp.is/${path}`,
+      `https://esi.evetech.net/${path}`,
       requestOptions
     );
     return request.body;
@@ -52,6 +53,7 @@ export default class ESIRequest {
    * Get current logged in character, and its affiliations
    */
   async getCharacter(): Promise<void> {
+    console.log("Getting character...");
     const { body: character }: { body: CharacterObject } = await got(
       "https://login.eveonline.com/oauth/verify",
       {
@@ -61,18 +63,22 @@ export default class ESIRequest {
         json: true
       }
     );
-    const affiliations = await this.call(`latest/characters/affiliation`, {
+    console.log("Getting affiliations...");
+    const [affiliations] = await this.call(`latest/characters/affiliation`, {
       method: "POST",
       body: [character.CharacterID]
     });
+    const affiliationNames = await this.getNames(Object.values(affiliations));
     this.character = character;
     this.affiliations = affiliations;
+    this.affiliationNames = affiliationNames;
   }
 
   async getNames(body: Array<number>) {
     if (!body.length) {
       return [];
     }
+    console.log("Getting names...");
     const names = await this.call("v2/universe/names", {
       method: "POST",
       body
@@ -80,14 +86,26 @@ export default class ESIRequest {
     return names;
   }
 
-  async getCorporationMemberIds(): Promise<Array<number>> {
+  async getCorporationInfo(): Promise<{
+    corporationId: number;
+    corporationMemberIds: Array<number>;
+    corporationName: string;
+  }> {
     if (!this.character) {
       await this.getCharacter();
     }
-    const [{ corporation_id: corporationId }] = this.affiliations;
+    const { corporation_id: corporationId } = this.affiliations;
+    const corporationName = this.affiliationNames.find(
+      ({ id }) => id === corporationId
+    ).name;
+    console.log("Getting corporation members...");
     const corporationMemberIds: Array<number> = await this.call(
       `latest/corporations/${corporationId}/members`
     );
-    return corporationMemberIds;
+    return {
+      corporationId,
+      corporationName,
+      corporationMemberIds
+    };
   }
 }

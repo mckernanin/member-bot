@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import { sign } from "jsonwebtoken";
+import config from "../config";
 import ESIRequest from "../esi";
 import { authorizationUri, getToken } from "./oauth";
 
@@ -8,7 +10,6 @@ import { authorizationUri, getToken } from "./oauth";
  * @param res
  */
 export const login = (req: Request, res: Response) => {
-  console.log(authorizationUri);
   return res.redirect(authorizationUri);
 };
 
@@ -23,5 +24,8 @@ export const callback = async (req: Request, res: Response) => {
   const token = await getToken(code);
   const esi = new ESIRequest(token.access_token);
   await esi.getCharacter();
-  return res.json(esi);
+  const jwt = sign({ token, character: esi.character }, config.jwtSecret, {
+    expiresIn: config.jwtExpire
+  });
+  return res.redirect(`/v1/members/setup?jwt=${jwt}`);
 };
