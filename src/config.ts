@@ -1,10 +1,10 @@
 import "dotenv/config";
 
-const throwIfUndefined = (env: string) => {
+const throwIfUndefined = (env: string): string => {
   if (!process.env[env]) {
     throw new Error(`Environment variable "${env}" is required.`);
   }
-  return process.env[env];
+  return process.env[env] || "";
 };
 
 interface EnvironmentVariables {
@@ -33,9 +33,9 @@ const variables: EnvironmentVariables = {
   jwtExpire: throwIfUndefined("JWT_EXPIRE"),
   jwtSecret: throwIfUndefined("JWT_SECRET"),
   aws: {
-    accessKey: throwIfUndefined("AWS_ACCESS_KEY_ID"),
-    secretKey: throwIfUndefined("AWS_SECRET_ACCESS_KEY"),
-    region: throwIfUndefined("AWS_REGION")
+    accessKey: throwIfUndefined("DB_AWS_ACCESS_KEY_ID"),
+    secretKey: throwIfUndefined("DB_AWS_SECRET_ACCESS_KEY"),
+    region: throwIfUndefined("DB_AWS_REGION")
   }
 };
 
