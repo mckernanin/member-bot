@@ -23,4 +23,8 @@ if (config.env === "development") {
 }
 app.use(errors.productionErrors);
 
-app.listen(app.get("port"), () => console.log("Warp drive active..."));
+try {
+  app.listen(app.get("port"), () => console.log("Warp drive active..."));
+} catch (error) {
+  console.dir(error);
+}
