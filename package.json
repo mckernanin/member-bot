@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "body-parser": "^1.18.3",
+    "diff-arrays-of-objects": "^1.1.2",
     "dotenv": "^6.0.0",
     "dynamoose": "^1.7.2",
     "express": "^4.16.3",
@@ -33,6 +34,7 @@
     "@types/morgan": "^1.7.35",
     "@types/simple-oauth2": "^2.2.0",
     "@types/typescript": "^2.0.0",
+    "@zeit/ncc": "^0.17.0",
     "ndb": "^1.0.23",
     "nodemon": "^1.18.3",
     "ts-node": "^7.0.1",
