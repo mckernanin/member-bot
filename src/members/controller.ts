@@ -4,6 +4,15 @@ import config from "../config";
 import ESIRequest from "../esi";
 import { checkAccessToken, TokenValues } from "../authentication/oauth";
 import { createCorporation, getCorporation } from "../db";
+import { memberDiffMessage, unchangedMessage } from "../webhook";
+
+const diff = require("diff-arrays-of-objects");
+
+interface Member {
+  category: string;
+  id: number;
+  name: string;
+}
 
 /**
  * Give the user a url with authentication to use to configure slack webhooks
@@ -43,11 +52,28 @@ export const check = async (req: Request, res: Response) => {
   } = await esi.getCorporationInfo();
   const members = await esi.getNames(corporationMemberIds);
   const currentCorporation = await getCorporation(corporationId);
-  if (
-    currentCorporation &&
-    currentCorporation.data === JSON.stringify(members)
-  ) {
-    return res.send("Corp membership has not changed since last check.");
+  if (!currentCorporation) {
+    return res.send(`${corporationName} now being tracked.`);
+  }
+  const { same, ...diffMembers } = diff(
+    JSON.parse(currentCorporation.data),
+    members
+  );
+  const changes = Object.values(diffMembers).filter((a: any) => a.length > 0);
+  if (changes.length === 0) {
+    unchangedMessage(
+      "Corporation membership unchanged.",
+      members.length,
+      corporationName
+    );
+    return res.json({
+      message: "Corp membership unchanged.",
+      corporation: {
+        corporationId,
+        corporationName
+      },
+      members: members.length
+    });
   }
   await createCorporation({
     corporationId,
@@ -55,14 +81,26 @@ export const check = async (req: Request, res: Response) => {
     data: JSON.stringify(members),
     createdAt: Date.now()
   });
-  return res.json({
+  const response = {
+    message: `Corporation membership updated. ${diffMembers.added.length ||
+      0} joined, ${diffMembers.removed.length || 0} left.`,
+    details: {
+      joined: diffMembers.added
+        .map((member: Member) => member.name)
+        .sort()
+        .join(", "),
+      left: diffMembers.removed
+        .map((member: Member) => member.name)
+        .sort()
+        .join(", ")
+    },
     corporationId,
     corporationName,
-    currentCorporation
-    // members
-  });
+    members: {
+      added: diffMembers.added,
+      removed: diffMembers.removed
+    }
+  };
+  memberDiffMessage(response);
+  return res.json(response);
 };
-
-// export const getCorporations = async (req: Request, res: Response) => {
-
-// }
