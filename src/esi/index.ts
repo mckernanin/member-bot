@@ -1,4 +1,5 @@
 import * as got from "got";
+const cache = new Map();
 
 export interface CharacterObject {
   CharacterID: number;
@@ -14,6 +15,7 @@ export interface RequestOptions {
   headers: {
     Authorization: string;
   };
+  cache?: Map<any, any>;
   json: boolean;
 }
 
@@ -34,7 +36,11 @@ export default class ESIRequest {
    * @param path
    * @param options
    */
-  async call(path: string, options: object = {}): Promise<any> {
+  async call(
+    path: string,
+    options: object = {},
+    useCache: boolean = false
+  ): Promise<any> {
     const requestOptions: RequestOptions = {
       headers: {
         Authorization: `Bearer ${this.token}`
@@ -42,6 +48,9 @@ export default class ESIRequest {
       json: true,
       ...options
     };
+    if (useCache) {
+      requestOptions.cache = cache;
+    }
     const request = await got(
       `https://esi.evetech.net/${path}`,
       requestOptions
@@ -64,10 +73,14 @@ export default class ESIRequest {
       }
     );
     console.log("Getting affiliations...");
-    const [affiliations] = await this.call(`latest/characters/affiliation`, {
-      method: "POST",
-      body: [character.CharacterID]
-    });
+    const [affiliations] = await this.call(
+      `latest/characters/affiliation`,
+      {
+        method: "POST",
+        body: [character.CharacterID]
+      },
+      true
+    );
     const affiliationNames = await this.getNames(Object.values(affiliations));
     this.character = character;
     this.affiliations = affiliations;
@@ -100,7 +113,9 @@ export default class ESIRequest {
     ).name;
     console.log("Getting corporation members...");
     const corporationMemberIds: Array<number> = await this.call(
-      `latest/corporations/${corporationId}/members`
+      `latest/corporations/${corporationId}/members`,
+      {},
+      true
     );
     return {
       corporationId,
