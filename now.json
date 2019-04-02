@@ -21,6 +21,8 @@
     "JWT_EXPIRE": "5d",
     "DB_AWS_ACCESS_KEY_ID": "@dynamo-aws-access-key",
     "DB_AWS_SECRET_ACCESS_KEY": "@dynamo-aws-secret-key",
-    "DB_AWS_REGION": "us-west-2"
+    "DB_AWS_REGION": "us-west-2",
+    "DISCORD_WEBHOOK": "@memberbot-discord-webhook",
+    "PORT": 1337
   }
 }

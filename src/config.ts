@@ -1,4 +1,4 @@
-import "dotenv/config";
+import 'now-env';
 
 const throwIfUndefined = (env: string): string => {
   if (!process.env[env]) {
