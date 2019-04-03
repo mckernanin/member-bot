@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "alias": "eve-member-bot.now.sh",
   "builds": [
     {
       "src": "src/index.ts",
