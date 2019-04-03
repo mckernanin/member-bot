@@ -17,7 +17,7 @@
     "IS_NOW": "true",
     "ESI_CLIENT": "@memberbot-esi-client",
     "ESI_SECRET": "@memberbot-esi-secret",
-    "REDIRECT_URL": "http://localhost:1337",
+    "REDIRECT_URL": "@memberbot-redirect-url",
     "JWT_SECRET": "@memberbot-jwt-secret",
     "JWT_EXPIRE": "5d",
     "DB_AWS_ACCESS_KEY": "@dynamo-aws-access-key",
