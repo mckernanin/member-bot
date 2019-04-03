@@ -1,4 +1,4 @@
-import 'now-env';
+import "now-env";
 
 const throwIfUndefined = (env: string): string => {
   if (!process.env[env]) {
@@ -33,8 +33,8 @@ const variables: EnvironmentVariables = {
   jwtExpire: throwIfUndefined("JWT_EXPIRE"),
   jwtSecret: throwIfUndefined("JWT_SECRET"),
   aws: {
-    accessKey: throwIfUndefined("DB_AWS_ACCESS_KEY_ID"),
-    secretKey: throwIfUndefined("DB_AWS_SECRET_ACCESS_KEY"),
+    accessKey: throwIfUndefined("DB_AWS_ACCESS_KEY"),
+    secretKey: throwIfUndefined("DB_AWS_SECRET_KEY"),
     region: throwIfUndefined("DB_AWS_REGION")
   }
 };

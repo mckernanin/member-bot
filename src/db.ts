@@ -1,23 +1,11 @@
 import * as dynamoose from "dynamoose";
 import config from "./config";
 
-export const connect = () => {
-  dynamoose.setDefaults({
-    create: true,
-    prefix: "Dev",
-    suffix: "",
-    waitForActive: true, // Wait for table to be created
-    waitForActiveTimeout: 1800 // 3 minutes,
-  });
-
-  dynamoose.AWS.config.update({
-    accessKeyId: config.aws.accessKey,
-    secretAccessKey: config.aws.secretKey,
-    region: config.aws.region
-  });
-
-  // dynamoose.local("http://localhost:8000");
-};
+dynamoose.AWS.config.update({
+  accessKeyId: config.aws.accessKey,
+  secretAccessKey: config.aws.secretKey,
+  region: config.aws.region
+});
 
 export const Model = dynamoose.model("Corporation", {
   corporationId: Number,
