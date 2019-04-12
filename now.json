@@ -19,7 +19,7 @@
     "ESI_SECRET": "@memberbot-esi-secret",
     "REDIRECT_URL": "@memberbot-redirect-url",
     "JWT_SECRET": "@memberbot-jwt-secret",
-    "JWT_EXPIRE": "5d",
+    "JWT_EXPIRE": "90d",
     "DB_AWS_ACCESS_KEY": "@dynamo-aws-access-key",
     "DB_AWS_SECRET_KEY": "@dynamo-aws-secret-key",
     "DB_AWS_REGION": "us-west-2",
