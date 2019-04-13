@@ -61,7 +61,7 @@ export const check = async (req: Request, res: Response) => {
   );
   const changes = Object.values(diffMembers).filter((a: any) => a.length > 0);
   if (changes.length === 0) {
-    unchangedMessage(
+    await unchangedMessage(
       "Corporation membership unchanged.",
       members.length,
       corporationName
@@ -101,6 +101,6 @@ export const check = async (req: Request, res: Response) => {
       removed: diffMembers.removed
     }
   };
-  memberDiffMessage(response);
+  await memberDiffMessage(response);
   return res.json(response);
 };

@@ -10,7 +10,7 @@ const truncateText = (text: string, limit: number) => {
   return `${text.slice(0, limit)} ...`;
 };
 
-export const unchangedMessage = (
+export const unchangedMessage = async (
   text: string,
   memberCount: number,
   corporationName: string
@@ -21,13 +21,17 @@ export const unchangedMessage = (
     .setText(text)
     .addField("Members", memberCount);
   try {
-    discord.send(message);
+    await discord.send(message);
   } catch (error) {
     console.error(error);
   }
 };
 
-export const memberDiffMessage = ({ message, details, corporationName }) => {
+export const memberDiffMessage = async ({
+  message,
+  details,
+  corporationName
+}) => {
   const formattedMessage = new MessageBuilder()
     .setName(corporationName)
     .setColor("#BADA55")
@@ -36,7 +40,7 @@ export const memberDiffMessage = ({ message, details, corporationName }) => {
     .addField("Left", truncateText(details.left, 1000))
     .setTime();
   try {
-    discord.send(formattedMessage);
+    await discord.send(formattedMessage);
   } catch (error) {
     console.error(error);
   }
